@@ -153,6 +153,9 @@ STATICFILES_DIRS = [
 
 # Use WhiteNoise to serve compressed, cached static files in production
 STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
     'staticfiles': {
         'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
@@ -168,3 +171,13 @@ NPM_BIN_PATH = os.getenv('NPM_BIN_PATH', 'npm')
 AUTHENTICATION_BACKENDS = [
     'books.backends.EmailBackend',
 ]
+
+# CSRF Configuration
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:8000').split(',')
+
+# Security settings for production
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_HTTPONLY = True
