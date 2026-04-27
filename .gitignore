@@ -42,7 +42,6 @@ __pycache__/
 
 # dotenv
 .env
-.env.*
 
 # Node / front-end
 node_modules/
