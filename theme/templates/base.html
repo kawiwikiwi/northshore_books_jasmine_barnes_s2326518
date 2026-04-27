@@ -1,0 +1,98 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        {% tailwind_css %}
+        <title>{% block title %}Northshore Books{% endblock %}</title>
+    </head>
+
+    <body class="bg-gray-50 text-black font-mono leading-normal tracking-normal flex flex-col min-h-screen">
+        <div class="navbar bg-base-100 shadow-sm text-white px-10">
+            <div class="flex-1 navbar-start">
+                <a href="{% url 'home' %}" class="btn btn-ghost text-xl">Northshore Books</a>
+            </div>
+
+            <div class="flex-1 navbar-center hidden lg:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'catalogue' %}">Catalogue</a></li>
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                </ul>
+            </div>
+            <div class="flex gap-2">
+                {% if user.is_authenticated %}
+
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle" aria-label="Current order">
+                        <div class="indicator">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            {% if cart_item_count %}
+                            <span class="badge badge-sm badge-accent indicator-item">{{ cart_item_count }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div
+                        tabindex="0"
+                        class="card card-compact dropdown-content bg-gray-200 z-1 w-64 shadow text-black">
+                        <div class="card-body">
+                            {% if cart_has_items %}
+                            <span class="text-lg font-bold">{{ cart_item_count }} item{{ cart_item_count|pluralize }}</span>
+                            <span class="text-info">Subtotal: £{{ cart_subtotal }}</span>
+                            <div class="text-sm space-y-1 mt-1">
+                                {% for item in cart_preview_items %}
+                                <p>{{ item.quantity }} x {{ item.title }}</p>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <span class="text-lg font-bold">Your cart is empty</span>
+                            <span class="text-sm text-gray-500">Add books from the catalogue to start an order.</span>
+                            {% endif %}
+                            <div class="card-actions mt-2">
+                                <a href="{% url 'orders' %}" class="btn btn-primary btn-block">View Current Order</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-10 rounded-full">
+                            <img
+                                alt="Profile picture"
+                                src="{{ user.avatar_url }}" />
+                        </div>
+                    </div>
+                    <ul
+                        tabindex="-1"
+                        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                        {% if user.is_staff %}
+                        <li><a href="{% url 'admin-dashboard' %}">Admin Dashboard</a></li>
+                        <li><a href="{% url 'admin-books' %}">Manage Books</a></li>
+                        <li><a href="{% url 'admin-orders' %}">Customer Orders</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'previous-orders' %}">Previous Orders</a></li>
+                        <li>
+                            <a href="{% url 'profile' %}">Profile</a>
+                        </li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </div>
+                {% else %}
+                <div class="flex gap-2">
+                    <a href="{% url 'login' %}" class="btn btn-ghost">Sign In</a>
+                    <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>

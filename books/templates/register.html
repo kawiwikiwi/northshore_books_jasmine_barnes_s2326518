@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Northshore Books - Register{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-4 flex flex-1 justify-center items-center">
+    <div class="card bg-base-100 w-96 shadow-sm rounded-2xl text-white py-4">
+        <div class="card-body">
+            <h2 class="card-title text-2xl">Join Us</h2>
+            <p class="text-gray-300">Create an account to access your personalized experience.</p>
+
+            <fieldset class="fieldset text-white mt-4">
+                <label class="label">Name</label>
+                <input type="text" id="register-name" class="input w-full" placeholder="Name" />
+
+                <label class="label">Email</label>
+                <input type="email" id="register-email" class="input w-full" placeholder="Email" />
+
+                <label class="label">Password</label>
+                <input type="password" id="register-password" class="input w-full" placeholder="Password" />
+
+                <button class="btn btn-primary mt-4" onclick="handleRegister()">Create Account</button>
+            </fieldset>
+
+            <p class="text-center text-gray-300 mt-4">
+                Already have an account?
+                <a href="{% url 'login' %}" class="text-primary font-semibold hover:underline">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function handleRegister() {
+        const name = document.getElementById('register-name').value.trim();
+        const email = document.getElementById('register-email').value.trim();
+        const password = document.getElementById('register-password').value;
+
+        const response = await fetch("{% url 'register' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        if (response.ok) {
+            window.location.href = "{% url 'login' %}";
+            return;
+        }
+
+        const message = await response.text();
+        console.error('Registration failed:', message);
+    }
+</script>
+
+
+
+{% endblock %}

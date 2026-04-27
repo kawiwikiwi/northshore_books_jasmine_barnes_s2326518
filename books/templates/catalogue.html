@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Catalogue - Northshore Books{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 flex flex-col justify-start min-h-calc(100vh-4rem)">
+    <h1 class="text-3xl font-bold mb-2">Our Books...</h1>
+    <p class="text-gray-700 mb-6">Browse our collection and find your next favorite read.</p>
+
+    <form method="get" class="grid grid-cols-1 md:grid-cols-6 gap-3 mb-6 text-black">
+        <input
+            type="text"
+            name="q"
+            value="{{ q }}"
+            placeholder="Search by title or author"
+            class="input input-bordered w-full md:col-span-2 bg-gray-300"
+        />
+        <input
+            type="text"
+            name="author"
+            value="{{ author }}"
+            placeholder="Filter by author"
+            class="input input-bordered w-full md:col-span-2 bg-gray-300"
+        />
+
+        <button type="submit" class="btn btn-primary w-full">Apply Filters</button>
+        <button type="button" class="btn btn-outline w-full hover:text-white" onclick="window.location.href='{% url 'catalogue' %}'">Clear Filters</button>
+    </form>
+
+    {% if books %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for book in books %}
+        <div class="card hover:shadow-lg">
+            <a href="{% url 'book-detail' book.id %}">
+                {% if book.cover_image %}
+                <figure class="px-4 pt-4">
+                    <img src="{{ book.cover_image }}" alt="{{ book.title }} cover" class="rounded-xl h-110 w-80 object-cover">
+                </figure>
+                {% endif %}
+                <div class="card-body pb-2">
+                    <h2 class="card-title">{{ book.title }}</h2>
+                    <p class="text-sm text-gray-400">by {{ book.author }}</p>
+                    <p class="font-semibold">£{{ book.price }}</p>
+                </div>
+            </a>
+
+            <div class="card-actions px-6 pb-6">
+                <button class="btn btn-ghost btn-sm w-full" onclick="window.location.href='{% url 'book-detail' book.id %}'">View Details</button>
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add-to-order' book.id %}" class="w-full">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% url 'catalogue' %}?page={{ page_obj.number }}&q={{ q|urlencode }}&author={{ author|urlencode }}">
+                    <button type="submit" class="btn btn-primary btn-sm w-full">Add to Order</button>
+                </form>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline btn-sm w-full">Login to Order</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="flex justify-center items-center gap-3 mt-8">
+        {% if page_obj.has_previous %}
+        <a
+            class="btn btn-outline"
+            href="?page={{ page_obj.previous_page_number }}&q={{ q }}&author={{ author }}"
+        >
+            Previous
+        </a>
+        {% endif %}
+
+        <span class="text-sm">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a
+            class="btn btn-outline"
+            href="?page={{ page_obj.next_page_number }}&q={{ q }}&author={{ author }}"
+        >
+            Next
+        </a>
+        {% endif %}
+    </div>
+    {% else %}
+    <p>No books available yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

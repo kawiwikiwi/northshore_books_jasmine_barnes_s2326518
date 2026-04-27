@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Northshore Books - Logout{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto mt-4 flex flex-1 justify-center items-center">
+    <div class="card bg-base-100 w-96 shadow-sm rounded-2xl text-white py-4">
+        <div class="card-body">
+            <h2 class="card-title text-2xl">Logged Out</h2>
+            <p class="text-gray-300">You have been successfully logged out.</p>
+
+            <button class="btn btn-primary mt-4" onclick="window.location.href='{% url 'home' %}'">Return to Home</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

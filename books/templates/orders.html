@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Current Order - Northshore Books{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 min-h-calc(100vh-4rem)">
+    <h1 class="text-3xl font-bold mb-2">Current Order</h1>
+    <p class="text-gray-700 mb-6">Review your active cart and submit when you are ready.</p>
+
+    <div class="card bg-gray-100 shadow-sm mb-8">
+        <div class="card-body">
+            <h2 class="card-title">Current Order</h2>
+
+            {% if draft_order and draft_order.items.count %}
+            <div class="overflow-x-auto">
+                <table class="table text-black">
+                    <thead>
+                        <tr class="text-black">
+                            <th class="border-b-accent">Book</th>
+                            <th class="border-b-accent">Quantity</th>
+                            <th class="border-b-accent">Unit Price</th>
+                            <th class="border-b-accent">Line Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in draft_order.items.all %}
+                        <tr>
+                            <td>{{ item.book.title }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>£{{ item.unit_price }}</td>
+                            <td>£{{ item.line_total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-4">
+                <p class="text-lg font-semibold">Order Total: £{{ draft_order.total }}</p>
+                <div class="flex gap-2">
+                    <a href="{% url 'previous-orders' %}" class="btn btn-outline">Previous Orders</a>
+                    <form method="post" action="{% url 'submit-order' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Submit Order</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <p class="text-gray-500">You do not have an active order yet. Add books from the catalogue to start one.</p>
+            <div class="card-actions mt-4">
+                <a href="{% url 'catalogue' %}" class="btn btn-outline">Browse Catalogue</a>
+                <a href="{% url 'previous-orders' %}" class="btn btn-ghost">View Previous Orders</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

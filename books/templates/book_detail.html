@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - Northshore Books{% endblock %}
+
+{% block content %}
+<div class='grid grid-cols-1 md:grid-cols-7 gap-6 min-h-calc(100vh-4rem) px-10'>
+    <div class="card-actions md:justify-center mt-10">
+        <a href="{% url 'catalogue' %}" class="btn btn-outline">Back to Catalogue</a>
+    </div>
+    <div class="container mx-auto flex flex-col-reverse md:flex-row gap-6 mt-10 col-span-5">
+        {% if book.cover_image %}
+        <figure class="">
+            <img src="{{ book.cover_image }}" alt="{{ book.title }} cover" class="rounded-xl max-h-5rem object-cover">
+        </figure>
+        {% endif %}
+        
+
+        <div class="card bg-gray-100 w-full shadow-sm rounded-2xl text-black">
+            <div class="card-body">
+                <div>
+                    <div>
+                        <h1 class="card-title text-3xl">{{ book.title }}</h1>
+                        <p class="text-lg text-gray-400">by {{ book.author }}</p>
+                        <p class="text-2xl font-bold mt-2">£{{ book.price }}</p>
+
+                        <div class="divider divider-primary"></div>
+
+                        <div class="mt-4">
+                            <h2 class="text-xl font-semibold mb-2">Description</h2>
+                            <p class="leading-relaxed">{{ book.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                {% if user.is_authenticated %}
+                    <div class="card-actions justify-center mt-6">
+                        <form method="post" action="{% url 'add-to-order' book.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{% url 'book-detail' book.id %}">
+                            <button type="submit" class="btn btn-primary">Add to Order</button>
+                        </form>
+                    </div>
+
+                {% else %}
+                    <div class="card-actions justify-center mt-6">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Login to Purchase</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

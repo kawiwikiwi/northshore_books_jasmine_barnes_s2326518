@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-6 flex flex-col items-center min-h-calc(100vh-4rem)">
+    <h1 class="text-3xl font-bold mb-2">Welcome to Northshore Books</h1>
+    <p class="text-gray-700 mb-6">Your one-stop shop for all your reading needs. Explore our extensive catalogue of books across various genres.</p>
+
+    <div class="flex gap-4">
+        <a href="{% url 'catalogue' %}" class="btn btn-primary">Browse the Catalogue</a>
+    </div>
+
+    <div class="w-full mt-20">
+        <div class="text-center mb-6">
+            <h2 class="text-3xl font-bold">Discover Something New</h2>
+            <p class="text-gray-700 mt-2">A random mix of books chosen just for you.</p>
+        </div>
+
+        {% if featured_books %}
+        <div class="rounded-3xl bg-base-100 shadow-lg p-4 flex flex-col">
+            <div class="flex flex-nowrap gap-6 overflow-x-auto px-2 py-3 w-full" id="carousel-container">
+                {% for book in featured_books %}
+                <div class="snap-start shrink-0 w-80">
+                    <div class="card bg-gray-100 shadow-md w-80 h-full">
+                        {% if book.cover_image %}
+                        <figure class="px-4 pt-4">
+                            <img src="{{ book.cover_image }}" alt="{{ book.title }} cover" class="rounded-2xl h-96 w-full object-cover shadow-md">
+                        </figure>
+                        {% endif %}
+                        <div class="card-body text-left text-black">
+                            <p class="uppercase tracking-wide text-sm text-gray-500">Featured Pick</p>
+                            <h3 class="text-2xl font-bold">{{ book.title }}</h3>
+                            <p class="text-lg text-gray-600">by {{ book.author }}</p>
+                            <p class="text-xl font-semibold">£{{ book.price }}</p>
+                            <p class="text-gray-700 line-clamp-4">{{ book.description }}</p>
+                            <div class="card-actions mt-2">
+                                <a href="{% url 'book-detail' book.id %}" class="btn btn-primary">View Book</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="card bg-base-100 shadow-sm mt-6">
+            <div class="card-body text-center">
+                <p class="text-gray-500">Add books to the catalogue to enable featured picks.</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
