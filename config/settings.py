@@ -141,7 +141,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Collect static files into this directory for production (used by collectstatic)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -152,14 +152,18 @@ STATICFILES_DIRS = [
 ]
 
 # Use WhiteNoise to serve compressed, cached static files in production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 TAILWIND_APP_NAME = 'theme'
 
-NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+NPM_BIN_PATH = os.getenv('NPM_BIN_PATH', 'npm')
 
 AUTHENTICATION_BACKENDS = [
     'books.backends.EmailBackend',
