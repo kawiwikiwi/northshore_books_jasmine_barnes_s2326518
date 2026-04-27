@@ -26,7 +26,6 @@ __pypackages__/
 *.log
 local_settings.py
 db.sqlite3
-media/
 staticfiles/
 
 # Python cache / virtualenv
